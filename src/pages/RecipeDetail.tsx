@@ -5,6 +5,12 @@ import { getTotalTimeMinutes, type Recipe } from '../types/recipe'
 
 type DetailStatus = 'loading' | 'ready' | 'missing' | 'error'
 
+const backLinkClass = 'inline-flex items-center font-[650] no-underline'
+const btnClass =
+  'mt-4 inline-flex items-center rounded-full bg-accent px-[1.1rem] py-[0.7rem] font-[650] text-white no-underline hover:bg-accent-dark'
+const blockClass =
+  'mb-[1.15rem] rounded-[10px] border border-line border-l-4 border-l-accent bg-surface px-[1.15rem] pt-4 pb-[0.35rem]'
+
 export function RecipeDetail() {
   const { id } = useParams()
   return <RecipeDetailContent key={id} id={id} />
@@ -54,12 +60,12 @@ function RecipeDetailContent({ id }: { id: string | undefined }) {
   }, [isValidId, recipeId])
 
   if (status === 'loading') {
-    return <p className="status-message">Carregando receita...</p>
+    return <p className="py-12">Carregando receita...</p>
   }
 
   if (status === 'error') {
     return (
-      <p className="status-message status-message--error">
+      <p className="py-12 text-favorite">
         Não foi possível carregar esta receita. Tente novamente em instantes.
       </p>
     )
@@ -67,10 +73,10 @@ function RecipeDetailContent({ id }: { id: string | undefined }) {
 
   if (status === 'missing' || recipe === null) {
     return (
-      <section className="empty-state">
-        <h1>Receita não encontrada</h1>
+      <section className="py-12">
+        <h1 className="mb-2">Receita não encontrada</h1>
         <p>Não existe uma receita com o identificador informado.</p>
-        <Link to="/" className="btn">
+        <Link to="/" className={btnClass}>
           Voltar ao catálogo
         </Link>
       </section>
@@ -80,26 +86,32 @@ function RecipeDetailContent({ id }: { id: string | undefined }) {
   const totalTime = getTotalTimeMinutes(recipe)
 
   return (
-    <article className="recipe-detail">
-      <Link to="/" className="back-link">
+    <article>
+      <Link to="/" className={backLinkClass}>
         ← Voltar ao catálogo
       </Link>
 
-      <div className="recipe-detail__hero">
-        <img src={recipe.image} alt={recipe.name} />
+      <div className="my-5 grid grid-cols-1 items-center gap-6 min-[801px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+        <img
+          src={recipe.image}
+          alt={recipe.name}
+          className="max-h-[380px] w-full rounded-[20px] object-cover"
+        />
         <div>
-          <p className="recipe-detail__cuisine">{recipe.cuisine}</p>
+          <p className="mb-1.5 text-[0.8rem] font-bold tracking-[0.08em] text-accent-dark uppercase">
+            {recipe.cuisine}
+          </p>
           <h1>{recipe.name}</h1>
-          <ul className="time-list">
-            <li>
+          <ul className="mt-5 grid list-none grid-cols-1 gap-3 p-0 min-[801px]:grid-cols-3">
+            <li className="flex flex-col gap-1 rounded-[14px] border border-line bg-surface p-[0.8rem]">
               <strong>Preparo</strong>
               <span>{recipe.prepTimeMinutes} min</span>
             </li>
-            <li>
+            <li className="flex flex-col gap-1 rounded-[14px] border border-line bg-surface p-[0.8rem]">
               <strong>Cozimento</strong>
               <span>{recipe.cookTimeMinutes} min</span>
             </li>
-            <li>
+            <li className="flex flex-col gap-1 rounded-[14px] border border-line bg-surface p-[0.8rem]">
               <strong>Total</strong>
               <span>{totalTime} min</span>
             </li>
@@ -107,20 +119,38 @@ function RecipeDetailContent({ id }: { id: string | undefined }) {
         </div>
       </div>
 
-      <section className="recipe-block">
-        <h2>Ingredientes</h2>
-        <ul className="ingredient-list">
+      <section className={blockClass}>
+        <h2 className="mb-[0.7rem] border-b border-line pb-[0.45rem] text-[1.15rem]">
+          Ingredientes
+        </h2>
+        <ul className="mb-[0.7rem] list-none p-0">
           {recipe.ingredients.map((ingredient) => (
-            <li key={ingredient}>{ingredient}</li>
+            <li
+              key={ingredient}
+              className="relative border-b border-line py-1.5 pr-0 pl-[1.15rem] last:border-b-0"
+            >
+              <span className="absolute left-0 font-bold text-accent">•</span>
+              {ingredient}
+            </li>
           ))}
         </ul>
       </section>
 
-      <section className="recipe-block">
-        <h2>Modo de preparo</h2>
-        <ol className="instruction-list">
+      <section className={blockClass}>
+        <h2 className="mb-[0.7rem] border-b border-line pb-[0.45rem] text-[1.15rem]">
+          Modo de preparo
+        </h2>
+        <ol className="mb-[0.7rem] list-none p-0">
           {recipe.instructions.map((step, index) => (
-            <li key={`${index}-${step}`}>{step}</li>
+            <li
+              key={`${index}-${step}`}
+              className="flex items-start gap-[0.7rem] border-b border-line py-[0.55rem] last:border-b-0"
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[0.8rem] font-bold text-accent-dark">
+                {index + 1}
+              </span>
+              {step}
+            </li>
           ))}
         </ol>
       </section>
