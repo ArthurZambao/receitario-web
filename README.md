@@ -12,7 +12,7 @@ Catálogo de receitas em **React + Vite + TypeScript**, consumindo a API públic
 
 ## Deploy
 
-URL pública na Vercel: _preencher após o deploy_
+URL pública na Vercel: [_receitario-web_](https://receitario-seven.vercel.app/)
 
 ## Catálogo
 
